@@ -19,6 +19,7 @@ public class GUI {
     JButton buttonStart = new JButton("Запустить сервер");
 
     ServerThread serv;
+    Thread t;
 
 
     public GUI() {
@@ -32,7 +33,11 @@ public class GUI {
             public void actionPerformed(ActionEvent e)
             {
                 serv = new ServerThread(textFieldIp.getText(), textFieldPort.getText());
-                serv.run();
+                t = new Thread(serv);
+                t.start();
+                textFieldIp.setEditable(false);
+                textFieldPort.setEditable(false);
+                buttonStart.setEnabled(false);
             }
         });
 

@@ -17,11 +17,24 @@ public class ServerThread implements Runnable {
     // Порт
     String port;
 
+    public boolean isRunning = false;
+
+
     public ServerThread(String ip, String port){
         this.ip = ip;
         this.port = port;
     }
 
+    public void SetStopSignal()
+    {
+        try {
+            server.close();
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+    }
 
     @Override
     public void run() {
@@ -31,6 +44,8 @@ public class ServerThread implements Runnable {
              BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
 
             System.out.println("Server socket created, command console reader for listen to server commands");
+
+            isRunning = true;
 
             // стартуем цикл при условии что серверный сокет не закрыт
             while (!server.isClosed()) {
@@ -45,9 +60,10 @@ public class ServerThread implements Runnable {
 
                     // если команда - quit то инициализируем закрытие сервера и
                     // выход из цикла раздачии нитей монопоточных серверов
-                    if (serverCommand.equalsIgnoreCase("quit")) {
+                    if (serverCommand.equalsIgnoreCase("quit") || !isRunning) {
                         System.out.println("Main Server initiate exiting...");
                         server.close();
+                        System.out.println("Сервер успешно остановлен");
                         break;
                     }
                 }
